@@ -41,7 +41,11 @@ class MapView {
         cellViews[j][i].render(model.cellModels[j][i]);
       }
     }    
-    text("Score: " + model.town_value_sum(), x+map_width - 80, y+30);
+    text("Place the hospitals", x+map_width - 140, y+30);
+    text("Score: " + (200 - model.town_value_sum()), x+map_width - 140, y+42);
+    if (model.hospitals_left() > 0) {
+      text("Hospitals left: " + model.hospitals_left(), x+map_width - 140, y+54);
+    }
   }
   
   void handle_press(MapModel model) {

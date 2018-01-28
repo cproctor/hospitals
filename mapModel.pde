@@ -100,6 +100,10 @@ class MapModel {
     return count;
   }
   
+  int hospitals_left() {
+    return hospitals_allowed - num_hospitals();
+  }
+  
   int town_value_sum() {
     float sum = 0;
     for (MapCellModel[] cellModelRow : cellModels) {
