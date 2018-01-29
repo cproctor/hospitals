@@ -84,7 +84,7 @@ void draw() {
 
 // ## Event bindings
 // The view's other job is to manage user interaction. These three functions
-// are defined by Processing ([referece](https://processing.org/reference/))
+// are defined by Processing ([reference](https://processing.org/reference/))
 // and are invoked at the appropriate time. (Thus, these functions are said to be
 // *bound to the event*.) In each case, the main program 
 // delegates action to the view. 
