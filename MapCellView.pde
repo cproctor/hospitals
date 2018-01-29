@@ -47,7 +47,8 @@ class MapCellView {
   // be passed in, so that we can access the state variables we need for rendering.
   void render(MapCellModel model) {
 
-    // Set the [tint](https://processing.org/reference/tint_.html) according to the cell's distance
+    // Set the [tint](https://processing.org/reference/tint_.html) according to the cell's distance.
+    // This has the effect of making cells far away from hospitals more red.
     tint(get_tint(model.normalized_value()));
 
     // Place a tile image on the screen.
@@ -66,7 +67,6 @@ class MapCellView {
   // ### get_tint
 
   // Gets the tint color via a linear interpolation between white and red. 
-  // This has the effect of making cells far away from hospitals more red.
   color get_tint(float value) {
     return lerpColor(color(255, 255, 255), color(255, 100, 100), value);
   }
