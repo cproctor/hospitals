@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>MapModel.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>MapModel.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1>MapModel</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>If your views are gregarious and outgoing, the model is the backend bookkeeper, 
+paying attention only to itself. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <h3>Constants</h3>
+<p>Define constants at the top of files so that you can easily find them and change them. 
+This also makes your code more readable.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>We want a higher score to be better, so the score is computed as <code>BASE_SCORE</code> minus 
+the sum of each town's distance to the nearest hospital.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kt">int</span> <span class="n">BASE_SCORE</span> <span class="o">=</span> <span class="mi">160</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>MapModel is responsible for maintaining state for the whole map. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">MapModel</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <h3>Instance variables</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p><code>cell_models</code> will be a 2d array of <a href="MapCellModel.html">MapCellModels</a>. Remember how <a href="MapView.html">MapView</a>
+kept a 2d array of <a href="MapCellView.html">MapCellViews</a> which did all the real work? We
+reuse the same pattern here.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">MapCellModel</span><span class="o">[][]</span> <span class="n">cell_models</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>A few integers keeping track of how many rows and columns there are in the map, and
+the number of hospitals allowed.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="n">rows</span><span class="o">,</span> <span class="n">cols</span><span class="o">,</span> <span class="n">hospitals_allowed</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <h3>Constructor</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>To create an instance of a MapModel, you must provide a 2d array of integers we'll call <code>terrain</code>
+(remember seeing that in <a href="hospitals.html#section-5">hosptals.pde</a>?), a 2d array of integers
+giving the coordinates of the towns, and the number of hospitals that should be allowed.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">MapModel</span><span class="o">(</span><span class="kt">int</span><span class="o">[][]</span> <span class="n">terrain</span><span class="o">,</span> <span class="kt">int</span><span class="o">[][]</span> <span class="n">towns</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_hospitals_allowed</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Save the integers for later.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">rows</span> <span class="o">=</span> <span class="n">terrain</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">terrain</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">length</span><span class="o">;</span>
+    <span class="n">hospitals_allowed</span> <span class="o">=</span> <span class="n">_hospitals_allowed</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Create a new instance of a 2d array to hold one <a href="MapCellModel.html">MapCellModel</a> for each cell in the map. 
+We could certainly have put them all into a 1d array, but we always look them 
+up by (x, y) coordinates, so it makes more sense to store them this way.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">cell_models</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MapCellModel</span><span class="o">[</span><span class="n">rows</span><span class="o">][</span><span class="n">cols</span><span class="o">];</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>For each row...</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">rows</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>for each column...</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">cols</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Create a new instance of a <a href="MapCellModel.html">MapCellModel</a> using data from <code>terrain</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">cell_models</span><span class="o">[</span><span class="n">j</span><span class="o">][</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MapCellModel</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">,</span> <span class="n">terrain</span><span class="o">[</span><span class="n">j</span><span class="o">][</span><span class="n">i</span><span class="o">]);</span>
+      <span class="o">}</span>
+    <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>For each <code>townIndex</code> (a pair of (x, y) coordinates) in <code>towns</code>,</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">townIndex</span> <span class="o">:</span> <span class="n">towns</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>find the right <a href="MapCellModel.html">MapCellModel</a> and add a town.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>       <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">townIndex</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+       <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">townIndex</span><span class="o">[</span><span class="mi">1</span><span class="o">];</span>
+       <span class="n">cell_models</span><span class="o">[</span><span class="n">j</span><span class="o">][</span><span class="n">i</span><span class="o">].</span><span class="na">add_town</span><span class="o">();</span>
+    <span class="o">}</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <h3>num_hospitals</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Counts the hospitals on the map.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="nf">num_hospitals</span><span class="o">()</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Create a variable called <code>count</code> and set it to <code>0</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>For each row of <a href="MapCellModel.html">MapCellModels</a>...</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="o">(</span><span class="n">MapCellModel</span><span class="o">[]</span> <span class="n">cell_model_row</span> <span class="o">:</span> <span class="n">cell_models</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>for each <a href="MapCellModel.html">MapCellModel</a>...</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>       <span class="k">for</span> <span class="o">(</span><span class="n">MapCellModel</span> <span class="n">cell_model</span> <span class="o">:</span> <span class="n">cell_model_row</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>if it has a hospital, add 1 to <code>count</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>         <span class="k">if</span> <span class="o">(</span><span class="n">cell_model</span><span class="o">.</span><span class="na">has_hospital</span><span class="o">)</span> <span class="o">{</span>
+           <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span>
+         <span class="o">}</span>
+       <span class="o">}</span>
+    <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Then return <code>count</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">count</span><span class="o">;</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <h3>hospitals_left</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>Returns the number of hospitals which may still be placed. This might seem so simple
+that it's not worth having a separate function, but anything you can do to reduce complexity
+outside the model is usually worth it.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="nf">hospitals_left</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">hospitals_allowed</span> <span class="o">-</span> <span class="n">num_hospitals</span><span class="o">();</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <h3>town_distance_sum</h3>
+<p>Sums the distance for each cell containing a town. 
+The goal of the game is to minimize this number.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="nf">town_distance_sum</span><span class="o">()</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>Following the same pattern as <code>num_hospitals</code>, create a variable and set it to <code>0</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kt">float</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>For each row of <a href="MapCellModel.html">MapCellModels</a>...</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="o">(</span><span class="n">MapCellModel</span><span class="o">[]</span> <span class="n">cell_model_row</span> <span class="o">:</span> <span class="n">cell_models</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>for each <a href="MapCellModel.html">MapCellModel</a>...</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>       <span class="k">for</span> <span class="o">(</span><span class="n">MapCellModel</span> <span class="n">cell_model</span> <span class="o">:</span> <span class="n">cell_model_row</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>if this cell has a town, add its distance (distance to the nearest hospital) to the sum.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>         <span class="k">if</span> <span class="o">(</span><span class="n">cell_model</span><span class="o">.</span><span class="na">has_town</span><span class="o">)</span> <span class="o">{</span>
+           <span class="n">sum</span> <span class="o">+=</span> <span class="n">cell_model</span><span class="o">.</span><span class="na">distance</span><span class="o">;</span>
+         <span class="o">}</span>
+       <span class="o">}</span>
+    <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>Then return <code>sum</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">round</span><span class="o">(</span><span class="n">sum</span><span class="o">);</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <h3>score</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>Returns the score for the map's current configuration.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="nf">score</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">BASE_SCORE</span> <span class="o">-</span> <span class="n">town_distance_sum</span><span class="o">();</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <h3>update_cell_distances</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p><strong> Warning: Advanced! </strong> 
+Update each cell's distance, which is the distance to the nearest hospital.
+Conceptually, the algorithm is pretty simple: we can start at the hospitals and work our way outward. If we know
+how far it is from a hospital to a particular cell, then it's pretty easy to figure
+out how far it is to that cell's neighbors. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">update_cell_distances</span><span class="o">()</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>We will use three categories of cells:
+<em>new cells</em> are the ones we haven't seen yet, 
+<em>edge cells</em> are the ones we're currently working on, 
+and <em>old cells</em> are the ones we've already processed.
+Create an <a href="https://processing.org/reference/ArrayList.html">ArrayList</a> (basically a resizable array) for each.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">MapCellModel</span><span class="o">&gt;</span> <span class="n">new_cells</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">MapCellModel</span><span class="o">&gt;();</span>
+    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">MapCellModel</span><span class="o">&gt;</span> <span class="n">edge_cells</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">MapCellModel</span><span class="o">&gt;();</span>
+    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">MapCellModel</span><span class="o">&gt;</span> <span class="n">old_cells</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">MapCellModel</span><span class="o">&gt;();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>Start by putting all the cells with hospitals into <code>edge_cells</code> and assign them distances according to their 
+terrain difficulty (so a hospital in the forest is harder to reach than a hospital on a field).</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>     <span class="k">for</span> <span class="o">(</span><span class="n">MapCellModel</span><span class="o">[]</span> <span class="n">cell_model_row</span> <span class="o">:</span> <span class="n">cell_models</span><span class="o">)</span> <span class="o">{</span>
+       <span class="k">for</span> <span class="o">(</span><span class="n">MapCellModel</span> <span class="n">cell_model</span> <span class="o">:</span> <span class="n">cell_model_row</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">cell_model</span><span class="o">.</span><span class="na">has_hospital</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">cell_model</span><span class="o">.</span><span class="na">distance</span> <span class="o">=</span> <span class="n">cell_model</span><span class="o">.</span><span class="na">terrain_difficulty</span><span class="o">();</span>
+          <span class="n">edge_cells</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">cell_model</span><span class="o">);</span>
+        <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      <p>Put all cells without hospitals in <code>new_cells</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">else</span> <span class="o">{</span>
+          <span class="n">new_cells</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">cell_model</span><span class="o">);</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+    <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>Then, as long as there are any <em>edge cells</em>, repeatedly: </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">while</span> <span class="o">(!</span><span class="n">edge_cells</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      <p>select the edge cell with the lowest distance, remove it from <code>edge_cells</code> and add it to 
+<code>old_cells</code> instead.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="kt">int</span> <span class="n">min_index</span> <span class="o">=</span> <span class="n">get_min_index</span><span class="o">(</span><span class="n">edge_cells</span><span class="o">);</span>
+      <span class="n">MapCellModel</span> <span class="n">closest_edge_cell</span> <span class="o">=</span> <span class="n">edge_cells</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">min_index</span><span class="o">);</span>
+      <span class="n">old_cells</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">closest_edge_cell</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <p>Then get all its neighbors. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">MapCellModel</span><span class="o">&gt;</span> <span class="n">neighbors</span> <span class="o">=</span> <span class="n">get_neighbors</span><span class="o">(</span><span class="n">closest_edge_cell</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      <p>For each neighbor, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">for</span> <span class="o">(</span><span class="n">MapCellModel</span> <span class="n">neighbor</span> <span class="o">:</span> <span class="n">neighbors</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      <p>if it's in <code>new_cells</code>, remove it from <code>new_cells</code>, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="o">(</span><span class="n">new_cells</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">neighbor</span><span class="o">))</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      <p>add it to <code>edge_cells</code>,</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>          <span class="n">edge_cells</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">neighbor</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      <p>and assign it a distance. The shortest possible path from a hospital to this neighbor
+is via <code>closest_edge_cell</code>, so its distance must be the <code>closest_edge_cell.distance</code> plus the neighbor's 
+terrain difficulty. <em>Note: This is not an obvious fact--it uses
+a famous result called <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">Dijkstra's Algorithm</a>.</em></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>          <span class="n">neighbor</span><span class="o">.</span><span class="na">distance</span> <span class="o">=</span> <span class="n">closest_edge_cell</span><span class="o">.</span><span class="na">distance</span> <span class="o">+</span> <span class="n">neighbor</span><span class="o">.</span><span class="na">terrain_difficulty</span><span class="o">();</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      <h2>Helpers</h2>
+<p>Each of the helpers below is only used once. But they're stil worth breaking out into separate functions 
+because <code>update_cell_distances</code> is already complex enough!</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      <h3>get_min_index</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      <p>Go through a list of cell models and returns the index of the one with the lowest distance.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="nf">get_min_index</span><span class="o">(</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">MapCellModel</span><span class="o">&gt;</span> <span class="n">cell_models</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      <p>Create a variable called <code>min_index</code> and set it to <code>0</code>. Until we see otherwise, the first
+element is the smallest.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kt">int</span> <span class="n">min_index</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      <p>For each <a href="MapCellModel.html">MapCellModel</a> in the <a href="https://processing.org/reference/ArrayList.html">ArrayList</a>, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">cell_models</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <p>if its distance is less than the <a href="MapCellModel.html">MapCellModel</a> at position <code>min_index</code>, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">if</span> <span class="o">(</span><span class="n">cell_models</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">distance</span> <span class="o">&lt;</span> <span class="n">cell_models</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">min_index</span><span class="o">).</span><span class="na">distance</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      <p>update <code>min_index</code></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>         <span class="n">min_index</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>         
+      <span class="o">}</span>
+    <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <p>Return the index of the <a href="MapCellModel.html">MapCellModel</a> with the smallest distance.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">min_index</span><span class="o">;</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      <h3>get_neighbors</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      <p>Given a <a href="MapCellModel.html">MapCellModel</a>, return a list of adjacent <a href="MapCellModel.html">MapCellModels</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">MapCellModel</span><span class="o">&gt;</span> <span class="nf">get_neighbors</span><span class="o">(</span><span class="n">MapCellModel</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
+      </div>
+      <p>Using the coordinates of this <a href="MapCellModel.html">MapCellModel</a>, 
+construct an array containing the coordinates of all possible neighbors.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="na">i</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="na">j</span><span class="o">;</span>
+    <span class="kt">int</span><span class="o">[][]</span> <span class="n">neighborIndices</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[][]</span> <span class="o">{{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span> <span class="n">j</span><span class="o">},</span> <span class="o">{</span><span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">},</span> <span class="o">{</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="o">,</span> <span class="n">j</span><span class="o">},</span> <span class="o">{</span><span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="o">}};</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-57'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-57'>#</a>
+      </div>
+      <p>Create an <a href="https://processing.org/reference/ArrayList.html">ArrayList</a> called <code>neighbors</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">MapCellModel</span><span class="o">&gt;</span> <span class="n">neighbors</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">MapCellModel</span><span class="o">&gt;();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-58'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-58'>#</a>
+      </div>
+      <p>For each <code>neighborIndex</code>, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">neighborIndex</span> <span class="o">:</span> <span class="n">neighborIndices</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-59'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-59'>#</a>
+      </div>
+      <p>if its coordinates are valid (within the map),  </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="kt">int</span> <span class="n">nI</span> <span class="o">=</span> <span class="n">neighborIndex</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+      <span class="kt">int</span> <span class="n">nJ</span> <span class="o">=</span> <span class="n">neighborIndex</span><span class="o">[</span><span class="mi">1</span><span class="o">];</span>
+      <span class="k">if</span> <span class="o">((</span><span class="n">nI</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">nI</span> <span class="o">&lt;</span> <span class="n">rows</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">nJ</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">nJ</span> <span class="o">&lt;</span> <span class="n">cols</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-60'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-60'>#</a>
+      </div>
+      <p>add it to <code>neighbors</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">neighbors</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">cell_models</span><span class="o">[</span><span class="n">nJ</span><span class="o">][</span><span class="n">nI</span><span class="o">]);</span>
+      <span class="o">}</span>
+    <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-61'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-61'>#</a>
+      </div>
+      <p>Finally, return <code>neighbors</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">neighbors</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-62'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-62'>#</a>
+      </div>
+      <h2>Next up...</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-63'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-63'>#</a>
+      </div>
+      <p>Whew! MapModel was definitely trickier, but we're past the worst of it. 
+We have just two more classes to go over: <a href="MapCellView.html">MapCellView</a>
+and <a href="MapCellModel.html">MapCellModel</a>, which implement the view and model
+for each map cell. It's not uncommon to have nested models and views, each 
+taking care of one part of a larger application. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-64'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-64'>#</a>
+      </div>
+      <p>Following our outside-in pattern, let's move on to <a href="MapCellView.html">MapCellView</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

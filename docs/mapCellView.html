@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>MapCellView.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>MapCellView.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1>MapCellView</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>MapCellView is responsible for rendering one cell of the map. There's not too much here.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <h2>Constants</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>These arbitrary numbers refer to the position of the town tile and the hospital tile in the
+list of tiles. It's much better to define these as constants than to sprinkle mystery numbers
+in our code.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kt">int</span> <span class="n">TOWN</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+<span class="kt">int</span> <span class="n">HOSPITAL</span> <span class="o">=</span> <span class="mi">4</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">MapCellView</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <h3>Instance variables</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Four integers specifying the position and size of the part of the screen owned by this instance. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">cell_width</span><span class="o">,</span> <span class="n">cell_height</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p><code>tiles</code> is an array of images created in <a href="MapView.html#section-12">MapView</a> so they don't have to be re-loaded
+in each MapCellView. This doesn't matter much for now, but if we wanted to create a scrolling world
+thousands of cells in each direction, the program would slow way down if we had to keep separate 
+copies of each tile for each MapCellView.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">PImage</span><span class="o">[]</span> <span class="n">tiles</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p><img src="tiles/field.png" width="32px">
+<img src="tiles/road.png" width="32px">
+<img src="tiles/forest.png" width="32px">
+<img src="tiles/town.png" width="32px">
+<img src="tiles/hospital.png" width="32px"></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <h3>Constructor</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Nothing special happening here. We store all the values passed in.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">MapCellView</span><span class="o">(</span><span class="kt">int</span> <span class="n">_x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_y</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_cell_width</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_cell_height</span><span class="o">,</span> <span class="n">PImage</span><span class="o">[]</span> <span class="n">_tiles</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">_x</span><span class="o">;</span> 
+    <span class="n">y</span> <span class="o">=</span> <span class="n">_y</span><span class="o">;</span>
+    <span class="n">cell_width</span> <span class="o">=</span> <span class="n">_cell_width</span><span class="o">;</span>
+    <span class="n">cell_height</span> <span class="o">=</span> <span class="n">_cell_height</span><span class="o">;</span>
+    <span class="n">tiles</span> <span class="o">=</span> <span class="n">_tiles</span><span class="o">;</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <h3>render</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>As with <a href="MapView.html">MapView</a>, <code>render</code> is the most important method, and it's called
+many times per second. Note that <code>render</code> requires a <a href="MapCellModel.html">MapCellModel</a> to 
+be passed in, so that we can access the state variables we need for rendering.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">render</span><span class="o">(</span><span class="n">MapCellModel</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Set the <a href="https://processing.org/reference/tint_.html">tint</a> according to the cell's distance</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">tint</span><span class="o">(</span><span class="n">get_tint</span><span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">normalized_value</span><span class="o">()));</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Place a tile image on the screen.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">image</span><span class="o">(</span><span class="n">tiles</span><span class="o">[</span><span class="n">model</span><span class="o">.</span><span class="na">terrain</span><span class="o">],</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">cell_width</span><span class="o">,</span> <span class="n">cell_height</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>If the cell has a town, overlay the town tile image.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">has_town</span><span class="o">)</span> <span class="o">{</span>
+       <span class="n">image</span><span class="o">(</span><span class="n">tiles</span><span class="o">[</span><span class="n">TOWN</span><span class="o">],</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">cell_width</span><span class="o">,</span> <span class="n">cell_height</span><span class="o">);</span>
+    <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>If the cell has a hospital, overlay the hospital tile image.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">has_hospital</span><span class="o">)</span> <span class="o">{</span>
+       <span class="n">image</span><span class="o">(</span><span class="n">tiles</span><span class="o">[</span><span class="n">HOSPITAL</span><span class="o">],</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">cell_width</span><span class="o">,</span> <span class="n">cell_height</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <h3>get_tint</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Gets the tint color via a linear interpolation between white and red. 
+This has the effect of making cells far away from hospitals more red.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">color</span> <span class="nf">get_tint</span><span class="o">(</span><span class="kt">float</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">lerpColor</span><span class="o">(</span><span class="n">color</span><span class="o">(</span><span class="mi">255</span><span class="o">,</span> <span class="mi">255</span><span class="o">,</span> <span class="mi">255</span><span class="o">),</span> <span class="n">color</span><span class="o">(</span><span class="mi">255</span><span class="o">,</span> <span class="mi">100</span><span class="o">,</span> <span class="mi">100</span><span class="o">),</span> <span class="n">value</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <h2>Next up...</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Hopefully, the parts of the program are starting to come together now. As you design your own 
+Processing app, it's wise to design from the outside in. Start by designing the interface, then 
+create one view for each part of the interface, and finally create models to keep track of state 
+as necessary. As I designed this app, I considered creating separate models for each building, 
+but decided it wasn't necessary. If you could do more with buildings, or if they could
+interact with each other more richly, it would be a more attractive design choice.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>On to our last stop, <a href="MapCellModel.html">MapCellModel</a>. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
