@@ -1,6 +1,3 @@
-// constants
-int BASE_SCORE = 160;
-
 // MapView is responsible for rendering the whole map and managing interaction
 // with the map.
 class MapView {
@@ -34,7 +31,13 @@ class MapView {
 
     for (int j = 0; j < rows; j++) {
       for (int i = 0; i < cols; i++) {
-        cell_views[j][i] = new MapCellView(x + i * cell_width, y + j * cell_height, cell_width, cell_height, tiles);
+        cell_views[j][i] = new MapCellView(
+          x + i * cell_width, 
+          y + j * cell_height, 
+          cell_width, 
+          cell_height, 
+          tiles
+        );
       }
     }
   }
@@ -51,7 +54,7 @@ class MapView {
     fill(0);
     text("Place the hospitals", x+map_width - 140, y+20);
     text("so they serve the towns", x+map_width - 140, y+32);
-    text("Score: " + (BASE_SCORE - model.town_value_sum()), x+map_width - 140, y+44);
+    text("Score: " + model.score(), x+map_width - 140, y+44);
     if (model.hospitals_left() > 0) {
       text("Hospitals left: " + model.hospitals_left(), x+map_width - 140, y+56);
     }

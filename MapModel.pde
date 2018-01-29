@@ -1,3 +1,6 @@
+// Constants
+int BASE_SCORE = 160;
+
 // MapModel is responsible for maintaining state for the whole map. 
 class MapModel {
   MapCellModel[][] cell_models;
@@ -120,5 +123,9 @@ class MapModel {
        }
     }
     return round(sum);
+  }
+
+  int score() {
+    return BASE_SCORE - town_value_sum();
   }
 }
