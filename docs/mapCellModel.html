@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>MapCellModel.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>MapCellModel.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1>MapCellModel</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h2>Constants</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Determines how much <em>distance</em> gets added when traversing each type of terrain:
+field, road, and forest.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kt">float</span><span class="o">[]</span> <span class="n">TERRAIN_WEIGHTS</span> <span class="o">=</span> <span class="o">{</span><span class="mi">1</span><span class="o">,</span> <span class="mf">0.3</span><span class="o">,</span> <span class="mi">3</span><span class="o">};</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>When distances are normalized (scaled to a [0, 1] range), we need to define 
+what should be considered the maximum distance. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kt">int</span> <span class="n">MAX_DISTANCE</span> <span class="o">=</span> <span class="mi">20</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>MapCellModel manages state for one map cell. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">MapCellModel</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <h2>Instance variables</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>A few integers keeping track of this cell's map coordinates and terrain type.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">,</span> <span class="n">terrain</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>The cell's distance to the nearest hospital. This is updated frequently by 
+<a href="MapModel.html#section-34">MapModel.update_cell_distances</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">float</span> <span class="n">distance</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Keep track of whether this cell has a town and whether this cell has a hospital.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">boolean</span> <span class="n">has_town</span><span class="o">,</span> <span class="n">has_hospital</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <h2>Constructor</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>The constructor is straightforward; we just store the values passed in and set default
+values for <code>has_town</code> and <code>has_hospital</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">MapCellModel</span><span class="o">(</span><span class="kt">int</span> <span class="n">_i</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_j</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_terrain</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">_i</span><span class="o">;</span> 
+    <span class="n">j</span> <span class="o">=</span> <span class="n">_j</span><span class="o">;</span> 
+    <span class="n">terrain</span> <span class="o">=</span> <span class="n">_terrain</span><span class="o">;</span>
+    <span class="n">has_town</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="n">has_hospital</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <h3>add_town</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Adds a town</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">add_town</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">has_town</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <h3>add_hospital</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Adds a hospital</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">add_hospital</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">has_hospital</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <h3>remove_hospital</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Removes a hospital</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">remove_hospital</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">has_hospital</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <h3>is_free</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Return true when there is no town or hospital here.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">boolean</span> <span class="nf">is_free</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="o">!(</span><span class="n">has_town</span> <span class="o">||</span> <span class="n">has_hospital</span><span class="o">);</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <h3>terrain_difficulty</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Looks up and returns the terrain difficulty.
+This method and those preceding it might seem pointless
+when their work is accomplished in one simple line of code. 
+However, it's important that each part of your program minds
+its own business, and these methods help achieve that. 
+This becomes especially important when you want to change your program; 
+The more different parts of your code reach into each others' internals, 
+the more likely it is that a change will result in an error somewhere else. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">float</span> <span class="nf">terrain_difficulty</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">TERRAIN_WEIGHTS</span><span class="o">[</span><span class="n">terrain</span><span class="o">];</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <h3>normalized_distance</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Scale distance to a range between 0 and 1. This function relies on some 
+convenient built-in Processing functions. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">float</span> <span class="nf">normalized_distance</span><span class="o">()</span> <span class="o">{</span>
+   <span class="k">return</span> <span class="n">max</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">min</span><span class="o">(</span><span class="n">MAX_DISTANCE</span><span class="o">,</span> <span class="n">map</span><span class="o">(</span><span class="n">distance</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">MAX_DISTANCE</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">)));</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <h3>equals</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>Defines how MapCellModels should be compared with each other
+for equality. Here, two MapCellModels are equal if they 
+share i and j. This is used internally by <a href="https://processing.org/reference/ArrayList.html">ArrayList</a>
+when figuring out whether a particular MapCellModel is in an ArrayList. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">MapCellModel</span> <span class="n">other</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">return</span> <span class="n">i</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="na">i</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="na">j</span><span class="o">;</span> 
+  <span class="o">}</span>
+  
+<span class="o">}</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
