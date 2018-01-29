@@ -1,12 +1,15 @@
-float[] terrainWeights = {1, 0.3, 3};
+// Constants
+float[] TERRAIN_WEIGHTS = {1, 0.3, 3};
 int MAX_VALUE = 10;
 
+// MapCellModel manages state for one map cell. 
 class MapCellModel {
   
   int id, i, j, terrain;
   float value;
   boolean has_town, has_hospital;  
   
+  // Constructor
   MapCellModel(int _i, int _j, int _terrain) {
     i = _i; 
     j = _j; 
@@ -15,26 +18,33 @@ class MapCellModel {
     has_hospital = false;
   }
   
+  // Adds a town
   void add_town() {
     has_town = true;
   }
   
+  // Adds a hospital
   void add_hospital() {
     has_hospital = true;
   }
   
   float terrain_difficulty() {
-    return terrainWeights[terrain];
+    return TERRAIN_WEIGHTS[terrain];
   }
   
+  // Scales this cell's value to a range between 0 and 1
   float normalized_value() {
    return max(0, min(MAX_VALUE, map(value, 0, MAX_VALUE, 0, 1)));
   }
   
+  // Defines how MapCellModels should be compared with each other
+  // for equality. Here, two MapCellModels are equal if they 
+  // share i and j. 
   boolean equals(MapCellModel other) {
    return i == other.i && j == other.j; 
   }
   
+  // Returns true when there is no town or hospital here.
   boolean is_free() {
     return !(has_town || has_hospital);
   }

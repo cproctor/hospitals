@@ -1,13 +1,14 @@
-// the mapCellView takes care of rendering a mapCellModel
-
+// Constants
 int TOWN = 3;
 int HOSPITAL = 4;
 
+// MapCellView takes care of rendering one cell on the map. 
 class MapCellView {
   
   int x, y, cell_width, cell_height;
   PImage[] tiles;
   
+  // Constructor
   MapCellView(int _x, int _y, int _cell_width, int _cell_height, PImage[] _tiles) {
     x = _x; 
     y = _y;
@@ -16,6 +17,7 @@ class MapCellView {
     tiles = _tiles;
   }
   
+  // Renders this cell
   void render(MapCellModel model) {
     tint(get_tint(model.normalized_value()));
     image(tiles[model.terrain], x, y, cell_width, cell_height);
@@ -27,7 +29,8 @@ class MapCellView {
     }
   }
   
+  // Gets the tint color via a linear interpolation between two colors
   color get_tint(float value) {
-    return lerpColor(color(100, 255, 100), color(255, 100, 100), value);
+    return lerpColor(color(255, 255, 255), color(255, 100, 100), value);
   }
 }
