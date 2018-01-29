@@ -9,7 +9,7 @@
 
 // It probably makes sense to play the game before reading the code. To play Hospitals, 
 // download [Processing](https://processing.org/) and then download 
-// [the code for Hospitals](). 
+// [the code for Hospitals](https://github.com/cproctor/hospitals/releases/tag/v1). 
 
 // <img src="hospitals.png" width="100%">
 
