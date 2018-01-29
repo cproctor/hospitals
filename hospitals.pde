@@ -103,7 +103,7 @@ void mousePressed() {
 
 // ### mouseDragged
 
-// `mouseDragged` is called every time the mose moves while the button is pressed 
+// `mouseDragged` is called every time the mouse moves while the button is pressed 
 // (often tens of times per second). 
 void mouseDragged() {
   if (view.mouse_over_map()) {
