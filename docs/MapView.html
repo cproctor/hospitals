@@ -99,7 +99,7 @@ So instead the MapView will load them once, and make them available to each MapC
         <a class='octothorpe' href='#section-6'>#</a>
       </div>
       <p><code>active_cell_model</code> will be a reference to a particular cell model. This will be used when 
-the player drags a hospital around the screen. When the mouse moves over a new cell, we will
+the player drags a hospital around the screen. When the mouse is dragged over a new cell, we will
 need to remember where the hospital used to be so that we can move it from there to the new
 cell.</p>
     </div>
@@ -266,7 +266,8 @@ This <a href="MapCellView.html">MapCellView</a> will own that little patch of sc
         <a class='octothorpe' href='#section-17'>#</a>
       </div>
       <p><code>render</code> is the most important method of every view--<code>render</code> kicks off the 
-whole process of rendering the view. </p>
+whole process of rendering the view. When <code>render</code> is called, a model must be provided, 
+so we can access the state data to be rendered.</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">render</span><span class="o">(</span><span class="n">MapModel</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span></pre></div>

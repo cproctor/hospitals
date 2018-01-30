@@ -75,7 +75,13 @@ download <a href="https://processing.org/">Processing</a> and then download
       </div>
       <p>We declare two global variables, <code>model</code> and <code>view</code>, each of which will 
 refer to an object defined in other files. It is wise to structure
-programs in this way. Models are responsible for managing state. Views are
+programs in this way. Models are responsible for managing state, all the data
+you would need to save a game
+and load it later. (For this game, state includes the positions of 
+all the hospitals and the score. If towns and terrain could change, we would
+also consider them part of state. Mouse events can impact the game, but the mouse 
+position isn't part of the core game data so we don't consider it part of state.)
+Views are
 responsible for interaction with the outside world--rendering the model 
 data and responding to user interactions. </p>
     </div>
@@ -207,7 +213,7 @@ re-rendering the view. </p>
       </div>
       <h2>Event bindings</h2>
 <p>The view's other job is to manage user interaction. These three functions
-are defined by Processing (<a href="https://processing.org/reference/">referece</a>)
+are defined by Processing (<a href="https://processing.org/reference/">reference</a>)
 and are invoked at the appropriate time. (Thus, these functions are said to be
 <em>bound to the event</em>.) In each case, the main program 
 delegates action to the view. </p>
