@@ -1,6 +1,3 @@
-// # MapCellView
-
-// MapCellView is responsible for rendering one cell of the map. There's not too much here.
 
 // ## Constants
 
@@ -10,6 +7,9 @@
 int TOWN = 3;
 int HOSPITAL = 4;
 
+// # MapCellView
+
+// MapCellView is responsible for rendering one cell of the map. There's not too much here.
 class MapCellView {
   
   // ### Instance variables

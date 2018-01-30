@@ -1,15 +1,13 @@
-// # MapModel
 
-// If your views are gregarious and outgoing, the model is the backend bookkeeper, 
-// paying attention only to itself. 
-
-// ### Constants
+// ## Constants
 // Define constants at the top of files so that you can easily find them and change them. 
 // This also makes your code more readable.
 
 // We want a higher score to be better, so the score is computed as `BASE_SCORE` minus 
 // the sum of each town's distance to the nearest hospital.
 int BASE_SCORE = 160;
+
+// # MapModel
 
 // MapModel is responsible for maintaining state for the whole map. 
 class MapModel {

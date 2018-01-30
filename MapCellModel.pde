@@ -1,4 +1,3 @@
-// # MapCellModel
 
 // ## Constants
 
@@ -9,6 +8,8 @@ float[] TERRAIN_WEIGHTS = {1, 0.3, 3};
 // When distances are normalized (scaled to a [0, 1] range), we need to define 
 // what should be considered the maximum distance. 
 int MAX_DISTANCE = 20;
+
+// # MapCellModel
 
 // MapCellModel manages state for one map cell. 
 class MapCellModel {

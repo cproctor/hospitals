@@ -17,7 +17,7 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
-      <h1>MapCellModel</h1>
+      
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span></pre></div>
@@ -67,10 +67,10 @@ what should be considered the maximum distance. </p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-4'>#</a>
       </div>
-      <p>MapCellModel manages state for one map cell. </p>
+      <h1>MapCellModel</h1>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">MapCellModel</span> <span class="o">{</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -79,10 +79,10 @@ what should be considered the maximum distance. </p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-5'>#</a>
       </div>
-      <h2>Instance variables</h2>
+      <p>MapCellModel manages state for one map cell. </p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre></pre></div>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">MapCellModel</span> <span class="o">{</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -91,10 +91,10 @@ what should be considered the maximum distance. </p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-6'>#</a>
       </div>
-      <p>A few integers keeping track of this cell's map coordinates and terrain type.</p>
+      <h2>Instance variables</h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>  <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">,</span> <span class="n">terrain</span><span class="o">;</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -102,6 +102,18 @@ what should be considered the maximum distance. </p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>A few integers keeping track of this cell's map coordinates and terrain type.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">,</span> <span class="n">terrain</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
       </div>
       <p>The cell's distance to the nearest hospital. This is updated frequently by 
 <a href="MapModel.html#section-34">MapModel.update_cell_distances</a></p>
@@ -111,10 +123,10 @@ what should be considered the maximum distance. </p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-8'>
+  <div class='section' id='section-9'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-8'>#</a>
+        <a class='octothorpe' href='#section-9'>#</a>
       </div>
       <p>Keep track of whether this cell has a town and whether this cell has a hospital.</p>
     </div>
@@ -123,10 +135,10 @@ what should be considered the maximum distance. </p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-9'>
+  <div class='section' id='section-10'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-9'>#</a>
+        <a class='octothorpe' href='#section-10'>#</a>
       </div>
       <h2>Constructor</h2>
     </div>
@@ -135,10 +147,10 @@ what should be considered the maximum distance. </p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-10'>
+  <div class='section' id='section-11'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-10'>#</a>
+        <a class='octothorpe' href='#section-11'>#</a>
       </div>
       <p>The constructor is straightforward; we just store the values passed in and set default
 values for <code>has_town</code> and <code>has_hospital</code>.</p>
@@ -154,10 +166,10 @@ values for <code>has_town</code> and <code>has_hospital</code>.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-11'>
+  <div class='section' id='section-12'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
+        <a class='octothorpe' href='#section-12'>#</a>
       </div>
       <h3>add_town</h3>
     </div>
@@ -166,10 +178,10 @@ values for <code>has_town</code> and <code>has_hospital</code>.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-12'>
+  <div class='section' id='section-13'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
+        <a class='octothorpe' href='#section-13'>#</a>
       </div>
       <p>Adds a town</p>
     </div>
@@ -180,10 +192,10 @@ values for <code>has_town</code> and <code>has_hospital</code>.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-13'>
+  <div class='section' id='section-14'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-13'>#</a>
+        <a class='octothorpe' href='#section-14'>#</a>
       </div>
       <h3>add_hospital</h3>
     </div>
@@ -192,10 +204,10 @@ values for <code>has_town</code> and <code>has_hospital</code>.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-14'>
+  <div class='section' id='section-15'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-14'>#</a>
+        <a class='octothorpe' href='#section-15'>#</a>
       </div>
       <p>Adds a hospital</p>
     </div>
@@ -206,10 +218,10 @@ values for <code>has_town</code> and <code>has_hospital</code>.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-15'>
+  <div class='section' id='section-16'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
+        <a class='octothorpe' href='#section-16'>#</a>
       </div>
       <h3>remove_hospital</h3>
     </div>
@@ -218,10 +230,10 @@ values for <code>has_town</code> and <code>has_hospital</code>.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-16'>
+  <div class='section' id='section-17'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
+        <a class='octothorpe' href='#section-17'>#</a>
       </div>
       <p>Removes a hospital</p>
     </div>
@@ -232,10 +244,10 @@ values for <code>has_town</code> and <code>has_hospital</code>.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-17'>
+  <div class='section' id='section-18'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
+        <a class='octothorpe' href='#section-18'>#</a>
       </div>
       <h3>is_free</h3>
     </div>
@@ -244,10 +256,10 @@ values for <code>has_town</code> and <code>has_hospital</code>.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-18'>
+  <div class='section' id='section-19'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
+        <a class='octothorpe' href='#section-19'>#</a>
       </div>
       <p>Return true when there is no town or hospital here.</p>
     </div>
@@ -258,10 +270,10 @@ values for <code>has_town</code> and <code>has_hospital</code>.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-19'>
+  <div class='section' id='section-20'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
+        <a class='octothorpe' href='#section-20'>#</a>
       </div>
       <h3>terrain_difficulty</h3>
     </div>
@@ -270,10 +282,10 @@ values for <code>has_town</code> and <code>has_hospital</code>.</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-20'>
+  <div class='section' id='section-21'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-20'>#</a>
+        <a class='octothorpe' href='#section-21'>#</a>
       </div>
       <p>Looks up and returns the terrain difficulty.
 This method and those preceding it might seem pointless
@@ -291,10 +303,10 @@ the more likely it is that a change will result in an error somewhere else. </p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-21'>
+  <div class='section' id='section-22'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-21'>#</a>
+        <a class='octothorpe' href='#section-22'>#</a>
       </div>
       <h3>normalized_distance</h3>
     </div>
@@ -303,10 +315,10 @@ the more likely it is that a change will result in an error somewhere else. </p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-22'>
+  <div class='section' id='section-23'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-22'>#</a>
+        <a class='octothorpe' href='#section-23'>#</a>
       </div>
       <p>Scale distance to a range between 0 and 1. This function relies on some 
 convenient built-in Processing functions. </p>
@@ -318,10 +330,10 @@ convenient built-in Processing functions. </p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-23'>
+  <div class='section' id='section-24'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-23'>#</a>
+        <a class='octothorpe' href='#section-24'>#</a>
       </div>
       <h3>equals</h3>
     </div>
@@ -330,10 +342,10 @@ convenient built-in Processing functions. </p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-24'>
+  <div class='section' id='section-25'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-24'>#</a>
+        <a class='octothorpe' href='#section-25'>#</a>
       </div>
       <p>Defines how MapCellModels should be compared with each other
 for equality. Here, two MapCellModels are equal if they 
