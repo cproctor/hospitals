@@ -195,7 +195,7 @@ be passed in, so that we can access the state variables we need for rendering.</
 This has the effect of making cells far away from hospitals more red.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">tint</span><span class="o">(</span><span class="n">get_tint</span><span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">normalized_value</span><span class="o">()));</span></pre></div>
+      <div class="highlight"><pre>    <span class="n">tint</span><span class="o">(</span><span class="n">get_tint</span><span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">normalized_distance</span><span class="o">()));</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -260,8 +260,8 @@ This has the effect of making cells far away from hospitals more red.</p>
       <p>Gets the tint color via a linear interpolation between white and red. </p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>  <span class="n">color</span> <span class="nf">get_tint</span><span class="o">(</span><span class="kt">float</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="n">lerpColor</span><span class="o">(</span><span class="n">color</span><span class="o">(</span><span class="mi">255</span><span class="o">,</span> <span class="mi">255</span><span class="o">,</span> <span class="mi">255</span><span class="o">),</span> <span class="n">color</span><span class="o">(</span><span class="mi">255</span><span class="o">,</span> <span class="mi">100</span><span class="o">,</span> <span class="mi">100</span><span class="o">),</span> <span class="n">value</span><span class="o">);</span>
+      <div class="highlight"><pre>  <span class="n">color</span> <span class="nf">get_tint</span><span class="o">(</span><span class="kt">float</span> <span class="n">distance</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">lerpColor</span><span class="o">(</span><span class="n">color</span><span class="o">(</span><span class="mi">255</span><span class="o">,</span> <span class="mi">255</span><span class="o">,</span> <span class="mi">255</span><span class="o">),</span> <span class="n">color</span><span class="o">(</span><span class="mi">255</span><span class="o">,</span> <span class="mi">100</span><span class="o">,</span> <span class="mi">100</span><span class="o">),</span> <span class="n">distance</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span></pre></div>
     </div>

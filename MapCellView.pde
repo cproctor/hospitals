@@ -49,7 +49,7 @@ class MapCellView {
 
     // Set the [tint](https://processing.org/reference/tint_.html) according to the cell's distance.
     // This has the effect of making cells far away from hospitals more red.
-    tint(get_tint(model.normalized_value()));
+    tint(get_tint(model.normalized_distance()));
 
     // Place a tile image on the screen.
     image(tiles[model.terrain], x, y, cell_width, cell_height);
@@ -67,8 +67,8 @@ class MapCellView {
   // ### get_tint
 
   // Gets the tint color via a linear interpolation between white and red. 
-  color get_tint(float value) {
-    return lerpColor(color(255, 255, 255), color(255, 100, 100), value);
+  color get_tint(float distance) {
+    return lerpColor(color(255, 255, 255), color(255, 100, 100), distance);
   }
 }
 
