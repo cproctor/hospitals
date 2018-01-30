@@ -24,7 +24,7 @@ class MapView {
   PImage[] tiles;
 
   // `active_cell_model` will be a reference to a particular cell model. This will be used when 
-  // the player drags a hospital around the screen. When the mouse moves over a new cell, we will
+  // the player drags a hospital around the screen. When the mouse is dragged over a new cell, we will
   // need to remember where the hospital used to be so that we can move it from there to the new
   // cell.
   MapCellModel active_cell_model;
@@ -91,7 +91,8 @@ class MapView {
   // ### Render
 
   // `render` is the most important method of every view--`render` kicks off the 
-  // whole process of rendering the view. 
+  // whole process of rendering the view. When `render` is called, a model must be provided, 
+  // so we can access the state data to be rendered.
   void render(MapModel model) {
 
     // Most of the work is delegated to the individual MapCellViews, so we go through 
