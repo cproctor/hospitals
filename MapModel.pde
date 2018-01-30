@@ -22,52 +22,42 @@ class MapModel {
     }
   }
   
-  // Updates each cell's weight, or distance to the nearest hospital.
-  // Here's the hardest work of the program: We need to figure out how far each 
-  // space is from a hospital. The algorithm is actually pretty simple:
-  // Conceptually, we can start at the hospitals and work our way outward. If we know
-  // how far it is from a hospital to a particular cell, then it's pretty easy to figure
-  // out how far it is to that cell's neighbors. We will use three categories of cells:
-  // "old cells" are the ones we've already processed; "new cells" are those we haven't 
-  // seen yet, and "edge cells" are the ones we're currently working on. 
-  // Start by defining all the hospitals to be the "edges," and give them values of 
-  // 0. Everything else is "new." Then repeatedly choose the "edge" with the lowest value, 
-  // add all its "new" neighbors to "edges," give them values of the edge value + 1, 
-  // and move the edge to "old". Keep going until we assign values to all the cells.
-  void update_cell_weights() {
-    ArrayList<MapCellModel> new_nodes = new ArrayList<MapCellModel>();
-    ArrayList<MapCellModel> edge_nodes = new ArrayList<MapCellModel>();
-    ArrayList<MapCellModel> old_nodes = new ArrayList<MapCellModel>();
+  // Update each cell's distance to the nearest hospital, 
+  // using Dijkstra's algorithm
+  void update_cell_distances() {
+    ArrayList<MapCellModel> new_cells = new ArrayList<MapCellModel>();
+    ArrayList<MapCellModel> edge_cells = new ArrayList<MapCellModel>();
+    ArrayList<MapCellModel> old_cells = new ArrayList<MapCellModel>();
      for (MapCellModel[] cell_modelRow : cell_models) {
        for (MapCellModel cell_model : cell_modelRow) {
         if (cell_model.has_hospital) {
-          cell_model.value = cell_model.terrain_difficulty();
-          edge_nodes.add(cell_model);
+          cell_model.distance = cell_model.terrain_difficulty();
+          edge_cells.add(cell_model);
         }
         else {
-          new_nodes.add(cell_model);
+          new_cells.add(cell_model);
         }
       }
     }
-    while (!edge_nodes.isEmpty()) {
-      int min_index = get_min_index(edge_nodes);
-      MapCellModel node = edge_nodes.remove(min_index);
+    while (!edge_cells.isEmpty()) {
+      int min_index = get_min_index(edge_cells);
+      MapCellModel node = edge_cells.remove(min_index);
       ArrayList<MapCellModel> neighbors = get_neighbors(node);
       for (MapCellModel neighbor : neighbors) {
-        if (new_nodes.remove(neighbor)) {
-          neighbor.value = node.value + neighbor.terrain_difficulty();
-          edge_nodes.add(neighbor);
+        if (new_cells.remove(neighbor)) {
+          neighbor.distance = node.distance + neighbor.terrain_difficulty();
+          edge_cells.add(neighbor);
         }
       }
-      old_nodes.add(node);
+      old_cells.add(node);
     }
   }
   
-  // Goes through a list of cell models and returns the index of the one with the lowest value.
+  // Goes through a list of cell models and returns the index of the one with the lowest distance.
   int get_min_index(ArrayList<MapCellModel> cell_models) {
     int min_index = 0;
     for (int i = 0; i < cell_models.size(); i++) {
-      if (cell_models.get(i).value < cell_models.get(min_index).value) {
+      if (cell_models.get(i).distance < cell_models.get(min_index).distance) {
          min_index = i;         
       }
     }
@@ -111,14 +101,14 @@ class MapModel {
     return hospitals_allowed - num_hospitals();
   }
   
-  // Sums the value for each cell containing a town. 
+  // Sums the distance for each cell containing a town. 
   // The goal of the game is to minimize this number.
-  int town_value_sum() {
+  int town_distance_sum() {
     float sum = 0;
     for (MapCellModel[] cell_model_row : cell_models) {
        for (MapCellModel cell_model : cell_model_row) {
          if (cell_model.has_town) {
-           sum += cell_model.value;
+           sum += cell_model.distance;
          }
        }
     }
@@ -126,6 +116,6 @@ class MapModel {
   }
 
   int score() {
-    return BASE_SCORE - town_value_sum();
+    return BASE_SCORE - town_distance_sum();
   }
 }

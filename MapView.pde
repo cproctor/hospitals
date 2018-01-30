@@ -70,7 +70,7 @@ class MapView {
     if (cell_model.is_free() && model.num_hospitals() < model.hospitals_allowed) {
         cell_model.has_hospital = true;
         active_cell_model = cell_model;
-        model.update_cell_weights();
+        model.update_cell_distances();
     }
     else if (cell_model.has_hospital) {
       active_cell_model = cell_model;
@@ -91,7 +91,7 @@ class MapView {
        active_cell_model.has_hospital = false;
        cell_model.has_hospital = true;
        active_cell_model = cell_model;
-       model.update_cell_weights();
+       model.update_cell_distances();
       }
     }
   }

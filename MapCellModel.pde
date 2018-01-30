@@ -6,7 +6,7 @@ int MAX_VALUE = 10;
 class MapCellModel {
   
   int id, i, j, terrain;
-  float value;
+  float distance;
   boolean has_town, has_hospital;  
   
   // Constructor
@@ -32,9 +32,9 @@ class MapCellModel {
     return TERRAIN_WEIGHTS[terrain];
   }
   
-  // Scales this cell's value to a range between 0 and 1
-  float normalized_value() {
-   return max(0, min(MAX_VALUE, map(value, 0, MAX_VALUE, 0, 1)));
+  // Scales this cell's distance to a range between 0 and 1
+  float normalized_distance() {
+   return max(0, min(MAX_VALUE, map(distance, 0, MAX_VALUE, 0, 1)));
   }
   
   // Defines how MapCellModels should be compared with each other

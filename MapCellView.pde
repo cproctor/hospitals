@@ -19,7 +19,7 @@ class MapCellView {
   
   // Renders this cell
   void render(MapCellModel model) {
-    tint(get_tint(model.normalized_value()));
+    tint(get_tint(model.normalized_distance()));
     image(tiles[model.terrain], x, y, cell_width, cell_height);
     if (model.has_town) {
        image(tiles[TOWN], x, y, cell_width, cell_height);
@@ -30,7 +30,7 @@ class MapCellView {
   }
   
   // Gets the tint color via a linear interpolation between two colors
-  color get_tint(float value) {
-    return lerpColor(color(255, 255, 255), color(255, 100, 100), value);
+  color get_tint(float distance) {
+    return lerpColor(color(255, 255, 255), color(255, 100, 100), distance);
   }
 }
