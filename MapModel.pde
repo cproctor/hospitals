@@ -25,6 +25,10 @@ class MapModel {
   // Update each cell's distance to the nearest hospital, 
   // using Dijkstra's algorithm
   void update_cell_distances() {
+    if (num_hospitals() == 0) {
+      clear_cell_distances();
+      return;
+    } 
     ArrayList<MapCellModel> new_cells = new ArrayList<MapCellModel>();
     ArrayList<MapCellModel> edge_cells = new ArrayList<MapCellModel>();
     ArrayList<MapCellModel> old_cells = new ArrayList<MapCellModel>();
@@ -50,6 +54,14 @@ class MapModel {
         }
       }
       old_cells.add(node);
+    }
+  }
+  
+  void clear_cell_distances() {
+    for (MapCellModel[] cell_modelRow : cell_models) {
+       for (MapCellModel cell_model : cell_modelRow) {
+         cell_model.distance = 0;
+       }
     }
   }
   
