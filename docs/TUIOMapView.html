@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>TUIOMapView.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>TUIOMapView.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>TUIOMapView supports interaction with a tangible user interface table. 
+If you haven't read the documentation for the standard <a href="MapView.html">MapView</a>, 
+start there first. This documentation will focus on what has changed.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>We will use a map (sometimes called a hashmap, dictionary, or associative array) in this class, 
+so we need to import the relevant library (the <a href="https://processing.org/reference/HashMap.html">documentation for HashMap</a> tells us this).</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <h2>Constants</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>These constants define properties of the text that will be displayed 
+in the top right hand corner of the screen, so we can easily make changes.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kt">int</span> <span class="n">ROWS_OF_TEXT</span> <span class="o">=</span> <span class="mi">4</span><span class="o">;</span>
+<span class="kt">int</span> <span class="n">TEXT_LINE_HEIGHT</span> <span class="o">=</span> <span class="mi">14</span><span class="o">;</span>
+<span class="kt">int</span> <span class="n">TEXT_OFFSET_TOP</span> <span class="o">=</span> <span class="mi">20</span><span class="o">;</span>
+<span class="kt">int</span> <span class="n">TEXT_OFFSET_RIGHT</span> <span class="o">=</span> <span class="mi">140</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <h1>TUIOMapView</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Like <a href="MapView.html">MapView</a>, TUIOMapView handles interaction with the outside world, in this case
+a tangible user interface table. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">TUIOMapView</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <h3>Instance variables</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>We still need to know how many rows and columns there should be in the map.
+And we still need a bunch of <a href="MapCellView.html">MapCellViews</a>. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="n">cols</span><span class="o">,</span> <span class="n">rows</span><span class="o">;</span>
+  <span class="n">MapCellView</span><span class="o">[][]</span> <span class="n">cell_views</span><span class="o">;</span>
+  <span class="n">PImage</span><span class="o">[]</span> <span class="n">tiles</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>We are using a new helper class called a <a href="Frame.html">Frame</a>, which translates between
+different coordinate spaces. More on this later.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">Frame</span> <span class="n">camera_frame</span><span class="o">,</span> <span class="n">map_frame</span><span class="o">,</span> <span class="n">text_frame</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>We are going to use a HashMap to keep track of the fiducials (See the <a href="https://web.stanford.edu/class/educ211/tangible-interface-tables.html">the BB&amp;A page</a>). Each fiducial on the screen is identified by an integer ID, and will 
+point to one MapCellModel. As the fiducials move around, we want to update MapCellModels with the locations 
+of hospitals.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span><span class="n">MapCellModel</span><span class="o">&gt;</span> <span class="n">fiducials</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <h3>Constructor</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>The constructor now requires more parameters: we need to know the location (x, y) and size (width, height) of
+the area of interest in the camera's field of view as well as the location and size of the display area
+where the map should be rendered.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">TUIOMapView</span><span class="o">(</span>
+      <span class="kt">int</span> <span class="n">_cols</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_rows</span><span class="o">,</span> 
+      <span class="kt">int</span> <span class="n">x_in</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y_in</span><span class="o">,</span> <span class="kt">int</span> <span class="n">width_in</span><span class="o">,</span> <span class="kt">int</span> <span class="n">height_in</span><span class="o">,</span> 
+      <span class="kt">int</span> <span class="n">x_out</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y_out</span><span class="o">,</span> <span class="kt">int</span> <span class="n">width_out</span><span class="o">,</span> <span class="kt">int</span> <span class="n">height_out</span>
+  <span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>We now have a lot of numbers to keep track of. This is where <a href="Frame.html">Frames</a> come in. 
+Once we initialize them, we can rely on them to translate back and forth between camera space, display 
+space, and map space. (We're even using an extra frame to define the space of the text box where
+instructions and score get rendered.)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">cols</span> <span class="o">=</span> <span class="n">_cols</span><span class="o">;</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">_rows</span><span class="o">;</span>
+    <span class="n">camera_frame</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Frame</span><span class="o">(</span><span class="n">cols</span><span class="o">,</span> <span class="n">rows</span><span class="o">,</span> <span class="n">x_in</span><span class="o">,</span> <span class="n">x_out</span><span class="o">,</span> <span class="n">width_in</span><span class="o">,</span> <span class="n">height_in</span><span class="o">);</span>
+    <span class="n">map_frame</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Frame</span><span class="o">(</span><span class="n">cols</span><span class="o">,</span> <span class="n">rows</span><span class="o">,</span> <span class="n">x_out</span><span class="o">,</span> <span class="n">y_out</span><span class="o">,</span> <span class="n">width_out</span><span class="o">,</span> <span class="n">height_out</span><span class="o">);</span>
+    <span class="n">text_frame</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Frame</span><span class="o">(</span>
+      <span class="mi">1</span><span class="o">,</span> 
+      <span class="n">ROWS_OF_TEXT</span><span class="o">,</span> 
+      <span class="n">x_out</span> <span class="o">+</span> <span class="n">width_out</span> <span class="o">-</span> <span class="n">TEXT_OFFSET_RIGHT</span><span class="o">,</span> 
+      <span class="n">y_out</span> <span class="o">+</span> <span class="n">TEXT_OFFSET_TOP</span><span class="o">,</span> 
+      <span class="mi">1</span><span class="o">,</span> 
+      <span class="n">ROWS_OF_TEXT</span> <span class="o">*</span> <span class="n">TEXT_LINE_HEIGHT</span>
+    <span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Create an instance of the HashMap, ready for use.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">fiducials</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span><span class="n">MapCellModel</span><span class="o">&gt;();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>As before, load the images once instead of having separate images loaded for each cell.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">tiles</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PImage</span><span class="o">[]</span> <span class="o">{</span>
+      <span class="n">loadImage</span><span class="o">(</span><span class="s">&quot;tiles/field.png&quot;</span><span class="o">),</span> 
+      <span class="n">loadImage</span><span class="o">(</span><span class="s">&quot;tiles/road.png&quot;</span><span class="o">),</span> 
+      <span class="n">loadImage</span><span class="o">(</span><span class="s">&quot;tiles/forest.png&quot;</span><span class="o">),</span>
+      <span class="n">loadImage</span><span class="o">(</span><span class="s">&quot;tiles/town.png&quot;</span><span class="o">),</span>
+      <span class="n">loadImage</span><span class="o">(</span><span class="s">&quot;tiles/hospital.png&quot;</span><span class="o">)</span>
+    <span class="o">};</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>As before, instantiate each <a href="MapCellView.html">MapCellView</a>. 
+The only change is that we got rid of some math because the <a href="Frame.html">Frame</a> can do it
+for us.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">cell_views</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MapCellView</span><span class="o">[</span><span class="n">rows</span><span class="o">][</span><span class="n">cols</span><span class="o">];</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">rows</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">cols</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+        <span class="n">cell_views</span><span class="o">[</span><span class="n">j</span><span class="o">][</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MapCellView</span><span class="o">(</span>
+          <span class="n">map_frame</span><span class="o">.</span><span class="na">get_x</span><span class="o">(</span><span class="n">i</span><span class="o">),</span> 
+          <span class="n">map_frame</span><span class="o">.</span><span class="na">get_y</span><span class="o">(</span><span class="n">j</span><span class="o">),</span>
+          <span class="n">map_frame</span><span class="o">.</span><span class="na">cell_width</span><span class="o">,</span> 
+          <span class="n">map_frame</span><span class="o">.</span><span class="na">cell_height</span><span class="o">,</span> 
+          <span class="n">tiles</span>
+        <span class="o">);</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <h3>render</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Except for one minor change, <code>render</code> is unchanged.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">render</span><span class="o">(</span><span class="n">MapModel</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">rows</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">cols</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+        <span class="n">cell_views</span><span class="o">[</span><span class="n">j</span><span class="o">][</span><span class="n">i</span><span class="o">].</span><span class="na">render</span><span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">cell_models</span><span class="o">[</span><span class="n">j</span><span class="o">][</span><span class="n">i</span><span class="o">]);</span>
+      <span class="o">}</span>
+    <span class="o">}</span>    
+    <span class="n">fill</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>As before, print some text to the top right corner.
+Compared to <a href="MapView.html">MapView</a>, the <a href="Frame.html">Frame</a> abstraction
+lets us do this much more elegantly. As a result, we can get a bit more
+creative: When there are no hospitals on the board, don't show the score. 
+When all the hospitals are placed, don't show how many hospitals are left.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="n">text</span><span class="o">(</span><span class="s">&quot;Place the hospitals&quot;</span><span class="o">,</span> <span class="n">text_frame</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">text_frame</span><span class="o">.</span><span class="na">get_y</span><span class="o">(</span><span class="n">row</span><span class="o">++));</span>
+    <span class="n">text</span><span class="o">(</span><span class="s">&quot;so they serve the towns&quot;</span><span class="o">,</span> <span class="n">text_frame</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">text_frame</span><span class="o">.</span><span class="na">get_y</span><span class="o">(</span><span class="n">row</span><span class="o">++));</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">hospitals_left</span><span class="o">()</span> <span class="o">&lt;</span> <span class="n">model</span><span class="o">.</span><span class="na">hospitals_allowed</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">text</span><span class="o">(</span><span class="s">&quot;Score: &quot;</span> <span class="o">+</span> <span class="n">model</span><span class="o">.</span><span class="na">score</span><span class="o">(),</span> <span class="n">text_frame</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">text_frame</span><span class="o">.</span><span class="na">get_y</span><span class="o">(</span><span class="n">row</span><span class="o">++));</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">hospitals_left</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">text</span><span class="o">(</span><span class="s">&quot;Hospitals left: &quot;</span> <span class="o">+</span> <span class="n">model</span><span class="o">.</span><span class="na">hospitals_left</span><span class="o">(),</span> <span class="n">text_frame</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">text_frame</span><span class="o">.</span><span class="na">get_y</span><span class="o">(</span><span class="n">row</span><span class="o">++));</span>
+    <span class="o">}</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <h2>Event bindings</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <h3>handle_add_fiducial</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>Called when the camera detects a new fiducial.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">handle_add_fiducial</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="kt">float</span> <span class="n">x</span><span class="o">,</span> <span class="kt">float</span> <span class="n">y</span><span class="o">,</span> <span class="n">MapModel</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Figure out which map cell the fiducial's camera-space position corresponds to and 
+get that cell.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kt">int</span> <span class="n">col</span> <span class="o">=</span> <span class="n">camera_frame</span><span class="o">.</span><span class="na">get_col</span><span class="o">(</span><span class="n">x</span><span class="o">);</span>
+    <span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="n">camera_frame</span><span class="o">.</span><span class="na">get_row</span><span class="o">(</span><span class="n">y</span><span class="o">);</span>
+    <span class="n">MapCellModel</span> <span class="n">cell_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="na">cell_models</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">col</span><span class="o">];</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Store a link between the fiducial's id and the cell.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">fiducials</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">cell_model</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>And add a hospital to the cell. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">cell_model</span><span class="o">.</span><span class="na">add_hospital</span><span class="o">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>Every time a hospital is added or removed, we need to re-compute cell distances.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">model</span><span class="o">.</span><span class="na">update_cell_distances</span><span class="o">();</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <h3>handle_remove_fiducial</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>Called when the camera no longer sees a fiducial.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">handle_remove_fiducial</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="kt">float</span> <span class="n">x</span><span class="o">,</span> <span class="kt">float</span> <span class="n">y</span><span class="o">,</span> <span class="n">MapModel</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>Look up the fiducial's cell, remove its hospital, and remove the 
+link between the fiducial's id and the cell.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">MapCellModel</span> <span class="n">cell_model</span> <span class="o">=</span> <span class="n">fiducials</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="n">cell_model</span><span class="o">.</span><span class="na">remove_hospital</span><span class="o">();</span>
+    <span class="n">fiducials</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">id</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>Then update distances.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">model</span><span class="o">.</span><span class="na">update_cell_distances</span><span class="o">();</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <h3>handle_move_fiducial</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>Called when a fiducial's position changes..</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">handle_move_fiducial</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="kt">float</span> <span class="n">x</span><span class="o">,</span> <span class="kt">float</span> <span class="n">y</span><span class="o">,</span> <span class="n">MapModel</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <p>Figure out which map cell the fiducial's camera-space position corresponds to and 
+get that cell. Then get this fiducial's new cell using its camera-space position 
+and the fiducial's old cell by looking it up in <code>fiducials</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kt">int</span> <span class="n">col</span> <span class="o">=</span> <span class="n">camera_frame</span><span class="o">.</span><span class="na">get_col</span><span class="o">(</span><span class="n">x</span><span class="o">);</span>
+    <span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="n">camera_frame</span><span class="o">.</span><span class="na">get_row</span><span class="o">(</span><span class="n">y</span><span class="o">);</span>
+    <span class="n">MapCellModel</span> <span class="n">new_cell_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="na">cell_models</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">col</span><span class="o">];</span>
+    <span class="n">MapCellModel</span> <span class="n">old_cell_model</span> <span class="o">=</span> <span class="n">fiducials</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">id</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>Check whether the new cell and the old cell are actually different (otherwise 
+it was just a small change in position, mapping to the same cell, and there is no effect 
+on the model).</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="o">(</span><span class="n">new_cell_model</span> <span class="o">!=</span> <span class="n">old_cell_model</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <p>If they are different, then update this fiducial's cell in <code>fiducials</code>, remove the hospital
+from the old cell, add it to the new cell, and update cell distances.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>       <span class="n">fiducials</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">new_cell_model</span><span class="o">);</span>
+       <span class="n">old_cell_model</span><span class="o">.</span><span class="na">remove_hospital</span><span class="o">();</span>
+       <span class="n">new_cell_model</span><span class="o">.</span><span class="na">add_hospital</span><span class="o">();</span>
+       <span class="n">model</span><span class="o">.</span><span class="na">update_cell_distances</span><span class="o">();</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <h2>Next up...</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>That's about it! We don't need to make any changes to the other files. We did, however, use one new
+class: <a href="Frame.html">Frame</a>. Now that we have another set of coordinates (points in the camera space 
+coming from ReactiVision), I noticed that I frequently needed to convert from one coordinate space 
+to another. So I designed a class which takes care of this work for me. This is yet another example
+of using modularity to encapsulate complexity. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>Let's read how <a href="Frame.html">Frame</a> works.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -1,7 +1,7 @@
 // # MapView
 
-// The MapView class is responsible for rendering the whole map and managing interaction
-// with the map. Classes describe kinds of things; instances represent things themselves. 
+// The MapView class is responsible for rendering the whole map and managing
+// mouse-based interaction. Classes describe kinds of things; instances represent things themselves. 
 // We only create one instance of MapView (in [hospitals.pde](hospitals.html#section-4)), 
 // but we will create many instances of other classes. 
 class MapView {

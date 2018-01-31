@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>Frame.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>Frame.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1>Frame</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>A Frame epresents a 2-dimensional space of rows and columns
+embedded within a larger coordinate space. Each of Frame's methods
+is relatively straightforward, but encapsulating it here makes
+the rest of our code much easier to think about.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">Frame</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <h3>Instance variables</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>These should be familiar by now.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="kt">int</span> <span class="n">cols</span><span class="o">,</span> <span class="n">rows</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">frame_width</span><span class="o">,</span> <span class="n">frame_height</span><span class="o">,</span> <span class="n">cell_width</span><span class="o">,</span> <span class="n">cell_height</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <h3>Constructor</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Does almost nothing other than storing the variables passed in.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="n">Frame</span><span class="o">(</span><span class="kt">int</span> <span class="n">_cols</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_rows</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_y</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_frame_width</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_frame_height</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">_cols</span><span class="o">;</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">_rows</span><span class="o">;</span>
+    <span class="n">frame_width</span> <span class="o">=</span> <span class="n">_frame_width</span><span class="o">;</span>
+    <span class="n">frame_height</span> <span class="o">=</span> <span class="n">_frame_height</span><span class="o">;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">_x</span><span class="o">;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">_y</span><span class="o">;</span>
+    <span class="n">cell_width</span> <span class="o">=</span> <span class="n">frame_width</span> <span class="o">/</span> <span class="n">cols</span><span class="o">;</span>
+    <span class="n">cell_height</span> <span class="o">=</span> <span class="n">frame_height</span> <span class="o">/</span> <span class="n">rows</span><span class="o">;</span>
+   <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <h3>get_col</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Translate a point's x-value in the external space into its corresponding column. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="kt">int</span> <span class="nf">get_col</span><span class="o">(</span><span class="kt">float</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>The built-in functions <a href="https://processing.org/reference/floor_.html">floor</a> and 
+<a href="https://processing.org/reference/map_.html">map</a> save us some work.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">return</span> <span class="n">floor</span><span class="o">(</span><span class="n">map</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">x</span><span class="o">+</span><span class="n">frame_width</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">cols</span><span class="o">));</span>
+   <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <h3>get_row</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Translate a point's y-value in the external space into its corresponding row. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="kt">int</span> <span class="nf">get_row</span><span class="o">(</span><span class="kt">float</span> <span class="n">j</span><span class="o">)</span> <span class="o">{</span>
+     <span class="k">return</span> <span class="n">floor</span><span class="o">(</span><span class="n">map</span><span class="o">(</span><span class="n">j</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">y</span><span class="o">+</span><span class="n">frame_height</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">rows</span><span class="o">));</span>
+   <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <h3>get_x</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Translate a column into the corresponding x-value in the external space.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="kt">int</span> <span class="nf">get_x</span><span class="o">(</span><span class="kt">int</span> <span class="n">col</span><span class="o">)</span> <span class="o">{</span>
+     <span class="k">return</span> <span class="n">floor</span><span class="o">(</span><span class="n">map</span><span class="o">(</span><span class="n">col</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">cols</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">x</span><span class="o">+</span><span class="n">frame_width</span><span class="o">));</span>
+   <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <h3>get_y</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Translate a row into the corresponding y-value in the external space.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="kt">int</span> <span class="nf">get_y</span><span class="o">(</span><span class="kt">int</span> <span class="n">row</span><span class="o">)</span> <span class="o">{</span>
+     <span class="k">return</span> <span class="n">floor</span><span class="o">(</span><span class="n">map</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">rows</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">y</span><span class="o">+</span><span class="n">frame_height</span><span class="o">));</span>
+   <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <h3>is_in_frame</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Determine whether a point in the external coordinate space is within the frame</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="kt">boolean</span> <span class="nf">is_in_frame</span><span class="o">(</span><span class="kt">float</span> <span class="n">i</span><span class="o">,</span> <span class="kt">float</span> <span class="n">j</span><span class="o">)</span> <span class="o">{</span>
+     <span class="kt">int</span> <span class="n">col</span> <span class="o">=</span> <span class="n">get_col</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+     <span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="n">get_row</span><span class="o">(</span><span class="n">j</span><span class="o">);</span>
+     <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">col</span> <span class="o">&amp;&amp;</span> <span class="n">col</span> <span class="o">&lt;</span> <span class="n">cols</span> <span class="o">&amp;&amp;</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">row</span> <span class="o">&amp;&amp;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">rows</span><span class="o">;</span>
+   <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <h3>That's it!</h3>
+<p>I hope some of the design principles discussed in this documentation are useful to you 
+in your own programming. <a href="index.html">Back to the menu</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
