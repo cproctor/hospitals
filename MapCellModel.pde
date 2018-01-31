@@ -28,6 +28,10 @@ class MapCellModel {
     has_hospital = true;
   }
   
+  void remove_hospital() {
+     has_hospital = false; 
+  }
+  
   float terrain_difficulty() {
     return TERRAIN_WEIGHTS[terrain];
   }
