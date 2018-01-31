@@ -1,7 +1,7 @@
 import java.util.Map;
 
 int ROWS_OF_TEXT = 4;
-int TEXT_LINE_HEIGHT = 12;
+int TEXT_LINE_HEIGHT = 14;
 int TEXT_OFFSET_TOP = 20;
 int TEXT_OFFSET_RIGHT = 140;
 
@@ -60,39 +60,45 @@ class TUIOMapView {
       }
     }    
     fill(0);
-    text("Place the hospitals", text_frame.get_x(0), text_frame.get_y(0));
-    text("so they serve the towns", text_frame.get_x(1), text_frame.get_y(0));
-    text("Score: " + model.score(), text_frame.get_x(2), text_frame.get_y(0));
+    int row = 0;
+    text("Place the hospitals", text_frame.x, text_frame.get_y(row++));
+    text("so they serve the towns", text_frame.x, text_frame.get_y(row++));
+    if (model.hospitals_left() < model.hospitals_allowed) {
+      text("Score: " + model.score(), text_frame.x, text_frame.get_y(row++));
+    }
     if (model.hospitals_left() > 0) {
-      text("Hospitals left: " + model.hospitals_left(), text_frame.get_x(3), text_frame.get_y(0));
+      text("Hospitals left: " + model.hospitals_left(), text_frame.x, text_frame.get_y(row++));
     }
   }
   
-  void handle_add_fiducial(int id, int x, int y, MapModel model) {
+  void handle_add_fiducial(int id, float x, float y, MapModel model) {
     int col = camera_frame.get_col(x);
     int row = camera_frame.get_row(y);
-    MapCellModel cell_model = model.cell_models[col][row];
+    MapCellModel cell_model = model.cell_models[row][col];
     fiducials.put(id, cell_model);
     cell_model.add_hospital();
+    model.update_cell_distances();
   }
   
-  void handle_remove_fiducial(int id, int x, int y, MapModel model) {
+  void handle_remove_fiducial(int id, float x, float y, MapModel model) {
     int col = camera_frame.get_col(x);
     int row = camera_frame.get_row(y);
-    MapCellModel cell_model = model.cell_models[col][row];
+    MapCellModel cell_model = model.cell_models[row][col];
     fiducials.remove(id);
     cell_model.remove_hospital();
+    model.update_cell_distances();
   }
   
-  void handle_move_fiducial(int id, int x, int y, MapModel model) {
+  void handle_move_fiducial(int id, float x, float y, MapModel model) {
     int col = camera_frame.get_col(x);
     int row = camera_frame.get_row(y);
-    MapCellModel new_cell_model = model.cell_models[col][row];
+    MapCellModel new_cell_model = model.cell_models[row][col];
     MapCellModel old_cell_model = fiducials.get(id);
     if (new_cell_model != old_cell_model) {
        fiducials.put(id, new_cell_model);
        old_cell_model.remove_hospital();
        new_cell_model.add_hospital();
+       model.update_cell_distances();
     }
   }
 }

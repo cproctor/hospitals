@@ -1,5 +1,8 @@
+import TUIO.*;
+TuioProcessing tuioClient;
+
 MapModel model;
-MapView view;
+TUIOMapView view;
 
 int[][] terrain = {
   { 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 }, 
@@ -34,26 +37,26 @@ int[][] towns = {
 
 void setup() {
    size(576, 576);
+   tuioClient  = new TuioProcessing(this);
    model = new MapModel(terrain, towns, 3);
-   view = new MapView(24, 24, 0, 0, 576, 576);
+   view = new TUIOMapView(24, 24, 0, 0, 1, 1, 0, 0, 576, 576);
 }
 
 void draw() {
   view.render(model);
 }
 
-void mousePressed() {
-  if (view.mouse_over_map()) {
-    view.handle_press(model); 
-  }
+void addTuioObject(TuioObject obj) {
+    println("ADD", obj.getSymbolID());
+  view.handle_add_fiducial(obj.getSymbolID(), obj.getX(), obj.getY(), model);
 }
 
-void mouseDragged() {
-  if (view.mouse_over_map()) {
-    view.handle_drag(model); 
-  }
+void removeTuioObject(TuioObject obj) {
+  println("REMOVE", obj.getSymbolID());
+  view.handle_remove_fiducial(obj.getSymbolID(), obj.getX(), obj.getY(), model);
 }
 
-void mouseReleased() {
-  view.handle_release();
+void updateTuioObject(TuioObject obj) {
+  println("MOVE", obj.getSymbolID(), obj.getX(), obj.getY());
+  view.handle_move_fiducial(obj.getSymbolID(), obj.getX(), obj.getY(), model);
 }

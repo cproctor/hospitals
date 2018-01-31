@@ -14,11 +14,11 @@ class Frame {
     cell_height = frame_height / rows;
    }
    
-   int get_col(int i) {
+   int get_col(float i) {
       return floor(map(i, x, x+frame_width, 0, cols));
    }
    
-   int get_row(int j) {
+   int get_row(float j) {
      return floor(map(j, y, y+frame_height, 0, rows));
    }
    
@@ -31,7 +31,7 @@ class Frame {
    }
 
    // Determine whether a point in the external coordinate space is within the frame
-   boolean is_in_frame(int i, int j) {
+   boolean is_in_frame(float i, float j) {
      int col = get_col(i);
      int row = get_row(j);
      return 0 <= col && col < cols && 0 <= row && row < rows;
