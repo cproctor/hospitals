@@ -2,14 +2,14 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>hospitals.pde</title>
+  <title>hospitals_tuio.pde</title>
   <link rel="stylesheet" href="pycco.css">
 </head>
 <body>
 <div id='container'>
   <div id="background"></div>
   <div class='section'>
-    <div class='docs'><h1>hospitals.pde</h1></div>
+    <div class='docs'><h1>hospitals_tuio.pde</h1></div>
   </div>
   <div class='clearall'>
   <div class='section' id='section-0'>
@@ -17,13 +17,7 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
-      <h1>Hospitals</h1>
-<p>Hospitals is a simple game designed to show off the capabilities of TLTL's 
-tangible user interface tables (TUI's) and to demonstrate some best practices
-for writing programs. The goal of the game is to place hospitals so that they 
-do as good a job as possible serving all the rural towns. The score reflects 
-how long it takes to get from each town to the nearest hospital; travel is 
-faster along roads and much slower through forests. </p>
+      <h1>Hospitals TUIO</h1>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span></pre></div>
@@ -35,9 +29,9 @@ faster along roads and much slower through forests. </p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
-      <p>It probably makes sense to play the game before reading the code. To play Hospitals, 
-download <a href="https://processing.org/">Processing</a> and then download 
-<a href="https://github.com/cproctor/hospitals/releases">the code for Hospitals</a>. </p>
+      <p>This file is almost the same as the <a href="hospitals.html">original version</a>, except
+that we are using a new view class and bind to new events, so that we can support
+a tangible user interface table instead of a mouse as an input device. </p>
     </div>
     <div class='code'>
       <div class="highlight"><pre></pre></div>
@@ -49,7 +43,9 @@ download <a href="https://processing.org/">Processing</a> and then download
       <div class='octowrap'>
         <a class='octothorpe' href='#section-2'>#</a>
       </div>
-      <p><img src="hospitals.png" width="100%"></p>
+      <p>Because we wisely designed a clean separation of model and view, 
+only minimal changes are needed to support this new interface.
+In this documentation, I will focus on the changes we had to make to the original file. </p>
     </div>
     <div class='code'>
       <div class="highlight"><pre></pre></div>
@@ -61,7 +57,7 @@ download <a href="https://processing.org/">Processing</a> and then download
       <div class='octowrap'>
         <a class='octothorpe' href='#section-3'>#</a>
       </div>
-      <h2>Initialization</h2>
+      <h3>Initializing TUIO</h3>
     </div>
     <div class='code'>
       <div class="highlight"><pre></pre></div>
@@ -73,21 +69,12 @@ download <a href="https://processing.org/">Processing</a> and then download
       <div class='octowrap'>
         <a class='octothorpe' href='#section-4'>#</a>
       </div>
-      <p>We declare two global variables, <code>model</code> and <code>view</code>, each of which will 
-refer to an object defined in other files. It is wise to structure
-programs in this way. Models are responsible for managing state, all the data
-you would need to save a game
-and load it later. (For this game, state includes the positions of 
-all the hospitals and the score. If towns and terrain could change, we would
-also consider them part of state. Mouse events can impact the game, but the mouse 
-position isn't part of the core game data so we don't consider it part of state.)
-Views are
-responsible for interaction with the outside world--rendering the model 
-data and responding to user interactions. </p>
+      <p>We need to import the TUIO library and create a TuioProcessing object. 
+You can read more about setting up TUIO <a href="https://web.stanford.edu/class/educ211/tangible-interface-tables.html">on the BB&amp;A course website</a>.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="n">MapModel</span> <span class="n">model</span><span class="o">;</span>
-<span class="n">MapView</span> <span class="n">view</span><span class="o">;</span></pre></div>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">TUIO.*</span><span class="o">;</span>
+<span class="n">TuioProcessing</span> <span class="n">tuioClient</span><span class="o">;</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -96,11 +83,14 @@ data and responding to user interactions. </p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-5'>#</a>
       </div>
-      <p>We use a two-dimensional array to define the world's terrain; <code>0</code> for fields, 
-<code>1</code> for roads, <code>2</code> for forests.</p>
+      <p>We are now using a view of class <a href="TUIOMapView.html">TUIOMapView</a> instead of 
+<a href="MapView.html">MapView</a>. We'll dig into that class shortly.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="kt">int</span><span class="o">[][]</span> <span class="n">terrain</span> <span class="o">=</span> <span class="o">{</span>
+      <div class="highlight"><pre><span class="n">MapModel</span> <span class="n">model</span><span class="o">;</span>
+<span class="n">TUIOMapView</span> <span class="n">view</span><span class="o">;</span>
+
+<span class="kt">int</span><span class="o">[][]</span> <span class="n">terrain</span> <span class="o">=</span> <span class="o">{</span>
   <span class="o">{</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span> <span class="o">},</span> 
   <span class="o">{</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span> <span class="o">},</span> 
   <span class="o">{</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span> <span class="o">},</span> 
@@ -125,7 +115,14 @@ data and responding to user interactions. </p>
   <span class="o">{</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">2</span> <span class="o">},</span>
   <span class="o">{</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span> <span class="o">},</span>
   <span class="o">{</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span> <span class="o">}</span>
-<span class="o">};</span></pre></div>
+<span class="o">};</span>
+<span class="kt">int</span><span class="o">[][]</span> <span class="n">towns</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="o">{</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">},</span> <span class="o">{</span><span class="mi">3</span><span class="o">,</span><span class="mi">3</span><span class="o">},</span> <span class="o">{</span><span class="mi">20</span><span class="o">,</span> <span class="mi">21</span><span class="o">},</span> <span class="o">{</span><span class="mi">18</span><span class="o">,</span> <span class="mi">20</span><span class="o">},</span> <span class="o">{</span><span class="mi">17</span><span class="o">,</span> <span class="mi">3</span><span class="o">},</span> <span class="o">{</span><span class="mi">15</span><span class="o">,</span><span class="mi">16</span><span class="o">},</span> <span class="o">{</span><span class="mi">17</span><span class="o">,</span> <span class="mi">16</span><span class="o">},</span> 
+  <span class="o">{</span><span class="mi">17</span><span class="o">,</span> <span class="mi">14</span><span class="o">},</span> <span class="o">{</span><span class="mi">14</span><span class="o">,</span> <span class="mi">17</span><span class="o">},</span> <span class="o">{</span><span class="mi">10</span><span class="o">,</span> <span class="mi">7</span><span class="o">},</span> <span class="o">{</span><span class="mi">6</span><span class="o">,</span> <span class="mi">12</span><span class="o">}</span>
+<span class="o">};</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="o">()</span> <span class="o">{</span>
+   <span class="n">size</span><span class="o">(</span><span class="mi">576</span><span class="o">,</span> <span class="mi">576</span><span class="o">);</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -134,16 +131,19 @@ data and responding to user interactions. </p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-6'>#</a>
       </div>
-      <p>Then we describe
-the position of towns using another 2d array of (x,y) coordinates. It would be
-more graceful to store this data in another file (so that we could support
-multiple levels), but this works for now.</p>
+      <p>Create an instance of the TuioProcessing object, which listens for 
+changes on the tangible interface table when ReactiVision is running. 
+(Again, see details <a href="https://web.stanford.edu/class/educ211/tangible-interface-tables.html">here</a>.)</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="kt">int</span><span class="o">[][]</span> <span class="n">towns</span> <span class="o">=</span> <span class="o">{</span>
-  <span class="o">{</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">},</span> <span class="o">{</span><span class="mi">3</span><span class="o">,</span><span class="mi">3</span><span class="o">},</span> <span class="o">{</span><span class="mi">20</span><span class="o">,</span> <span class="mi">21</span><span class="o">},</span> <span class="o">{</span><span class="mi">18</span><span class="o">,</span> <span class="mi">20</span><span class="o">},</span> <span class="o">{</span><span class="mi">17</span><span class="o">,</span> <span class="mi">3</span><span class="o">},</span> <span class="o">{</span><span class="mi">15</span><span class="o">,</span><span class="mi">16</span><span class="o">},</span> <span class="o">{</span><span class="mi">17</span><span class="o">,</span> <span class="mi">16</span><span class="o">},</span> 
-  <span class="o">{</span><span class="mi">17</span><span class="o">,</span> <span class="mi">14</span><span class="o">},</span> <span class="o">{</span><span class="mi">14</span><span class="o">,</span> <span class="mi">17</span><span class="o">},</span> <span class="o">{</span><span class="mi">10</span><span class="o">,</span> <span class="mi">7</span><span class="o">},</span> <span class="o">{</span><span class="mi">6</span><span class="o">,</span> <span class="mi">12</span><span class="o">}</span>
-<span class="o">};</span></pre></div>
+      <div class="highlight"><pre>   <span class="n">tuioClient</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">TuioProcessing</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+   <span class="n">model</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MapModel</span><span class="o">(</span><span class="n">terrain</span><span class="o">,</span> <span class="n">towns</span><span class="o">,</span> <span class="mi">3</span><span class="o">);</span>
+   <span class="n">view</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TUIOMapView</span><span class="o">(</span><span class="mi">24</span><span class="o">,</span> <span class="mi">24</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">576</span><span class="o">,</span> <span class="mi">576</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">draw</span><span class="o">()</span> <span class="o">{</span>
+  <span class="n">view</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">model</span><span class="o">);</span>
+<span class="o">}</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -152,7 +152,7 @@ multiple levels), but this works for now.</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-7'>#</a>
       </div>
-      <h3>Setup</h3>
+      <h2>New event bindings</h2>
     </div>
     <div class='code'>
       <div class="highlight"><pre></pre></div>
@@ -164,15 +164,25 @@ multiple levels), but this works for now.</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-8'>#</a>
       </div>
-      <p>Every Processing program requires two functions: <code>setup</code> and <code>draw</code>. <code>setup</code> 
-runs once at the beginning of the program, setting the window size and 
-creating instances of the model and view. </p>
+      <p>Previously, we bound to mouse presses, releases, and drags. Now, we have a new
+set of events, defined by the TUIO protocol. When we create functions with certain 
+names, they will be bound to the events we care about: fiducials being added, removed, and moved.
+As before, we delegate the action to our view.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="kt">void</span> <span class="nf">setup</span><span class="o">()</span> <span class="o">{</span>
-   <span class="n">size</span><span class="o">(</span><span class="mi">576</span><span class="o">,</span> <span class="mi">576</span><span class="o">);</span>
-   <span class="n">model</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MapModel</span><span class="o">(</span><span class="n">terrain</span><span class="o">,</span> <span class="n">towns</span><span class="o">,</span> <span class="mi">3</span><span class="o">);</span>
-   <span class="n">view</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MapView</span><span class="o">(</span><span class="mi">24</span><span class="o">,</span> <span class="mi">24</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">576</span><span class="o">,</span> <span class="mi">576</span><span class="o">);</span>
+      <div class="highlight"><pre><span class="kt">void</span> <span class="nf">addTuioObject</span><span class="o">(</span><span class="n">TuioObject</span> <span class="n">obj</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">println</span><span class="o">(</span><span class="s">&quot;ADD&quot;</span><span class="o">,</span> <span class="n">obj</span><span class="o">.</span><span class="na">getSymbolID</span><span class="o">());</span>
+  <span class="n">view</span><span class="o">.</span><span class="na">handle_add_fiducial</span><span class="o">(</span><span class="n">obj</span><span class="o">.</span><span class="na">getSymbolID</span><span class="o">(),</span> <span class="n">obj</span><span class="o">.</span><span class="na">getX</span><span class="o">(),</span> <span class="n">obj</span><span class="o">.</span><span class="na">getY</span><span class="o">(),</span> <span class="n">model</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">removeTuioObject</span><span class="o">(</span><span class="n">TuioObject</span> <span class="n">obj</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">println</span><span class="o">(</span><span class="s">&quot;REMOVE&quot;</span><span class="o">,</span> <span class="n">obj</span><span class="o">.</span><span class="na">getSymbolID</span><span class="o">());</span>
+  <span class="n">view</span><span class="o">.</span><span class="na">handle_remove_fiducial</span><span class="o">(</span><span class="n">obj</span><span class="o">.</span><span class="na">getSymbolID</span><span class="o">(),</span> <span class="n">obj</span><span class="o">.</span><span class="na">getX</span><span class="o">(),</span> <span class="n">obj</span><span class="o">.</span><span class="na">getY</span><span class="o">(),</span> <span class="n">model</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">updateTuioObject</span><span class="o">(</span><span class="n">TuioObject</span> <span class="n">obj</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">println</span><span class="o">(</span><span class="s">&quot;MOVE&quot;</span><span class="o">,</span> <span class="n">obj</span><span class="o">.</span><span class="na">getSymbolID</span><span class="o">(),</span> <span class="n">obj</span><span class="o">.</span><span class="na">getX</span><span class="o">(),</span> <span class="n">obj</span><span class="o">.</span><span class="na">getY</span><span class="o">());</span>
+  <span class="n">view</span><span class="o">.</span><span class="na">handle_move_fiducial</span><span class="o">(</span><span class="n">obj</span><span class="o">.</span><span class="na">getSymbolID</span><span class="o">(),</span> <span class="n">obj</span><span class="o">.</span><span class="na">getX</span><span class="o">(),</span> <span class="n">obj</span><span class="o">.</span><span class="na">getY</span><span class="o">(),</span> <span class="n">model</span><span class="o">);</span>
 <span class="o">}</span></pre></div>
     </div>
   </div>
@@ -182,7 +192,7 @@ creating instances of the model and view. </p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-9'>#</a>
       </div>
-      <h3>Draw</h3>
+      <h2>Next up...</h2>
     </div>
     <div class='code'>
       <div class="highlight"><pre></pre></div>
@@ -194,146 +204,7 @@ creating instances of the model and view. </p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-10'>#</a>
       </div>
-      <p><code>draw</code> is called over and over, many times per second. 
-The view's main job is to render the state data contained in the model. 
-As the program runs, the state changes, and it is reflected on-screen by
-re-rendering the view. </p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="kt">void</span> <span class="nf">draw</span><span class="o">()</span> <span class="o">{</span>
-  <span class="n">view</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">model</span><span class="o">);</span>
-<span class="o">}</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-11'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
-      </div>
-      <h2>Event bindings</h2>
-<p>The view's other job is to manage user interaction. These three functions
-are defined by Processing (<a href="https://processing.org/reference/">reference</a>)
-and are invoked at the appropriate time. (Thus, these functions are said to be
-<em>bound to the event</em>.) In each case, the main program 
-delegates action to the view. </p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-12'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
-      </div>
-      <h3>mousePressed</h3>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-13'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-13'>#</a>
-      </div>
-      <p>When the mouse is pressed, if the mouse is over the map, the view's 
-<code>handle_press</code> method is called. Note that we pass in the model, because
-the view will likely need to make changes to the state (for example, 
-adding a new hospital in a certain cell).</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="kt">void</span> <span class="nf">mousePressed</span><span class="o">()</span> <span class="o">{</span>
-  <span class="k">if</span> <span class="o">(</span><span class="n">view</span><span class="o">.</span><span class="na">mouse_over_map</span><span class="o">())</span> <span class="o">{</span>
-    <span class="n">view</span><span class="o">.</span><span class="na">handle_press</span><span class="o">(</span><span class="n">model</span><span class="o">);</span> 
-  <span class="o">}</span>
-<span class="o">}</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-14'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-14'>#</a>
-      </div>
-      <h3>mouseDragged</h3>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-15'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
-      </div>
-      <p><code>mouseDragged</code> is called every time the mouse moves while the button is pressed 
-(often tens of times per second). </p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="kt">void</span> <span class="nf">mouseDragged</span><span class="o">()</span> <span class="o">{</span>
-  <span class="k">if</span> <span class="o">(</span><span class="n">view</span><span class="o">.</span><span class="na">mouse_over_map</span><span class="o">())</span> <span class="o">{</span>
-    <span class="n">view</span><span class="o">.</span><span class="na">handle_drag</span><span class="o">(</span><span class="n">model</span><span class="o">);</span> 
-  <span class="o">}</span>
-<span class="o">}</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-16'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
-      </div>
-      <h3>mouseReleased</h3>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-17'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
-      </div>
-      <p><code>mouseReleased</code> is called every time the mouse button is released.</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="kt">void</span> <span class="nf">mouseReleased</span><span class="o">()</span> <span class="o">{</span>
-  <span class="n">view</span><span class="o">.</span><span class="na">handle_release</span><span class="o">();</span>
-<span class="o">}</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-18'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
-      </div>
-      <h3>Next up...</h3>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-19'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
-      </div>
-      <p>Before we go on, it's worth noting how little code there was in this file
-and how manageable it (hopefully) felt. One major goal of software design 
-is <strong>modularity</strong>, the encapsulation of complexity. In this file, we
-ask a bunch of objects to do complicated tasks, but we don't want to worry
-about the details of how those tasks get done (yet). Your tour of the code
-will dig deeper one layer at a time.</p>
-<p>Next you should read about <a href="MapView.html">MapView</a>, the class which renders 
-the map and handles user interactions.</p>
+      <p>Now let's see what's new in <a href="TUIOMapView.html">TUIOMapView</a>.</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre></pre></div>
